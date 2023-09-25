@@ -7,8 +7,8 @@ type DarkTheme = boolean;
 const getTheme = () => {
 	if (browser) {
 		if (
-			localStorage.theme === 'dark' ||
-			(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+			localStorage['data-theme'] === 'dark' ||
+			(!('data-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
 		) {
 			return true;
 		} else {
@@ -38,6 +38,6 @@ darkTheme.subscribe((value) => {
 		value
 			? document.documentElement.setAttribute('data-theme', 'dark')
 			: document.documentElement.setAttribute('data-theme', 'light');
-		localStorage.setItem('theme', value ? 'dark' : 'light');
+		localStorage.setItem('data-theme', value ? 'dark' : 'light');
 	}
 });

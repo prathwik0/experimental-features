@@ -40,7 +40,7 @@
 	on:click={() => {
 		darkTheme.toggle();
 	}}
-	class="ml-4 mr-4 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 rounded-lg text-sm p-2.5"
+	class="focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 rounded-lg text-sm p-2.5"
 >
 	<svg
 		id="theme-toggle-dark-icon"
