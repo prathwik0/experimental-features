@@ -1,6 +1,6 @@
 <script>
-	export let data;
+	import ThemeToggle from '$lib/components/theme/ThemeToggle.svelte';
 </script>
 
-<h1>Welcome to Experimental Features</h1>
-<p>{data.item[0].list[0].question}</p>
+<h1 class="text-3xl font-bold underline">Experimental Features</h1>
+<ThemeToggle />
