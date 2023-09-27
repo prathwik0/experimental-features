@@ -5,19 +5,16 @@
 
 	let score = 0;
 	let currentQuestion = 0;
+	let questionCounter = 0;
 
-	function submitForm() {
-		for (let i = 0; i < data.list.length; i++) {
-			if (data.answers[i].answer === data.list[i].answer) {
-				score++;
-			}
-		}
-		alert(`Your score is ${score}`);
-		return;
-	}
-
-	function nextClick() {
-		currentQuestion++;
+	function restart() {
+		score = 0;
+		currentQuestion = 0;
+		questionCounter = 0;
+		data.answers.forEach((answer) => {
+			answer.answered = false;
+			answer.answer = '';
+		});
 	}
 
 	function prevClick() {
@@ -27,13 +24,23 @@
 		currentQuestion--;
 	}
 
-	function handleClick(e: any) {
-		if (data.answers[currentQuestion].answered === false) {
-			data.answers[currentQuestion].answered = true;
-			data.answers[currentQuestion].answer = e.target.value;
-		} else {
-			data.answers[currentQuestion].answer = e.target.value;
-			//alert('You have already answered this question');
+	function nextClick() {
+		if (currentQuestion === data.list.length - 1) {
+			return;
+		}
+		currentQuestion++;
+	}
+
+	function handleClick(e: MouseEvent) {
+		const target = e.target as HTMLButtonElement;
+		if (data.answers[currentQuestion].answered) {
+			return;
+		}
+		questionCounter++;
+		data.answers[currentQuestion].answered = true;
+		data.answers[currentQuestion].answer = target.value;
+		if (data.answers[currentQuestion].answer === data.list[currentQuestion].answer) {
+			score++;
 		}
 	}
 </script>
@@ -47,22 +54,32 @@
 
 	{#each data.answers[currentQuestion].order as i}
 		<button
-			class="btn btn-ghost {data.answers[currentQuestion].answer ===
-			data.list[currentQuestion].options[i]
-				? 'btn-active'
-				: ''}"
+			class="btn {data.list[currentQuestion].answer ===
+				data.list[currentQuestion].options[i] && data.answers[currentQuestion].answered
+				? 'btn-success'
+				: ''}
+				{data.answers[currentQuestion].answer === data.list[currentQuestion].options[i] &&
+			data.list[currentQuestion].answer !== data.list[currentQuestion].options[i] &&
+			data.answers[currentQuestion].answered
+				? 'btn-warning'
+				: ''}
+				"
 			value={data.list[currentQuestion].options[i]}
 			on:click={(e) => handleClick(e)}>{data.list[currentQuestion].options[i]}</button
 		>
 	{/each}
 
-	{#if currentQuestion !== 0}
-		<button class="btn btn-primary w-32" on:click={() => prevClick()}>Prev</button>
+	{#if currentQuestion === data.list.length - 1}
+		<h1>Score: {score}</h1>
 	{/if}
 
+	{#if currentQuestion !== 0}
+		<button class="btn btn-primary w-32" on:click={() => prevClick()}>Previous</button>
+	{/if}
 	{#if currentQuestion !== data.list.length - 1}
 		<button class="btn btn-primary w-32" on:click={() => nextClick()}>Next</button>
 	{:else}
-		<button class="btn btn-primary w-32" on:click={() => submitForm()}>Submit</button>
+		<button class="btn btn-primary w-32" on:click={() => restart()}>Restart Quiz</button>
 	{/if}
+	<p>Questions Attempted: {questionCounter}</p>
 </div>
