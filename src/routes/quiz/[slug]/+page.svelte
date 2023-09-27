@@ -2,60 +2,65 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
 	let score = 0;
-	let currentQuestion = data.data?.list[0].question;
-	let answerList: string[] = [];
+	let currentQuestion = 0;
 
 	function submitForm() {
-		for (let i = 0; i < data.data?.list.length; i++) {
-			if (answerList[i] === data.data?.list[i].answer) {
+		for (let i = 0; i < data.list.length; i++) {
+			if (data.answers[i].answer === data.list[i].answer) {
 				score++;
 			}
 		}
 		alert(`Your score is ${score}`);
-		currentQuestion = data.data?.list[0].question;
-		score = 0;
-		answerList = [];
 		return;
 	}
 
-	function nextClick(i: number) {
-		currentQuestion = data.data?.list[i + 1].question;
+	function nextClick() {
+		currentQuestion++;
 	}
 
-	function prevClick(i: number) {
-		if (currentQuestion === data.data?.list[0].question) {
+	function prevClick() {
+		if (currentQuestion === 0) {
 			return;
 		}
-		currentQuestion = data.data?.list[i - 1].question;
+		currentQuestion--;
 	}
 
-	function handleClick(e: any, index: number) {
-		answerList[index] = e.target.value;
+	function handleClick(e: any) {
+		if (data.answers[currentQuestion].answered === false) {
+			data.answers[currentQuestion].answered = true;
+			data.answers[currentQuestion].answer = e.target.value;
+		} else {
+			alert('You have already answered this question');
+		}
 	}
 </script>
 
-{#each data.data?.list as item, i}
-	{#if currentQuestion === item.question}
-		<div class="flex flex-col items-center gap-4">
-			<h1>{i + 1}. {item.question}</h1>
-			{#each item.options as option}
-				<button
-					class="btn btn-ghost {answerList[i] === option ? 'btn-active' : ''}"
-					value={option}
-					on:click={(e) => handleClick(e, i)}>{option}</button
-				>
-			{/each}
-			{#if i !== 0}
-				<button class="btn btn-primary w-32" on:click={() => prevClick(i)}>Prev</button>
-			{/if}
-			{#if i !== data.data?.list.length - 1}
-				<button class="btn btn-primary w-32" on:click={() => nextClick(i)}>Next</button>
-			{:else}
-				<button class="btn btn-primary w-32" on:click={() => submitForm()}>Submit</button>
-			{/if}
+<p>{JSON.stringify(data)}</p>
+<p>Current question - {currentQuestion}</p>
+<hr />
 
-			<hr />
-		</div>
+<div class="flex flex-col items-center gap-4">
+	<h1>{currentQuestion + 1}. {data.list[currentQuestion].question}</h1>
+
+	{#each data.list[currentQuestion].options as option}
+		<button
+			class="btn btn-ghost {data.answers[currentQuestion].answer === option
+				? 'btn-active'
+				: ''}"
+			value={option}
+			on:click={(e) => handleClick(e)}>{option}</button
+		>
+	{/each}
+
+	{#if currentQuestion !== 0}
+		<button class="btn btn-primary w-32" on:click={() => prevClick()}>Prev</button>
 	{/if}
-{/each}
+
+	{#if currentQuestion !== data.list.length - 1}
+		<button class="btn btn-primary w-32" on:click={() => nextClick()}>Next</button>
+	{:else}
+		<button class="btn btn-primary w-32" on:click={() => submitForm()}>Submit</button>
+	{/if}
+</div>
