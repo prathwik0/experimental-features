@@ -32,7 +32,8 @@
 			data.answers[currentQuestion].answered = true;
 			data.answers[currentQuestion].answer = e.target.value;
 		} else {
-			alert('You have already answered this question');
+			data.answers[currentQuestion].answer = e.target.value;
+			//alert('You have already answered this question');
 		}
 	}
 </script>
@@ -44,13 +45,14 @@
 <div class="flex flex-col items-center gap-4">
 	<h1>{currentQuestion + 1}. {data.list[currentQuestion].question}</h1>
 
-	{#each data.list[currentQuestion].options as option}
+	{#each data.answers[currentQuestion].order as i}
 		<button
-			class="btn btn-ghost {data.answers[currentQuestion].answer === option
+			class="btn btn-ghost {data.answers[currentQuestion].answer ===
+			data.list[currentQuestion].options[i]
 				? 'btn-active'
 				: ''}"
-			value={option}
-			on:click={(e) => handleClick(e)}>{option}</button
+			value={data.list[currentQuestion].options[i]}
+			on:click={(e) => handleClick(e)}>{data.list[currentQuestion].options[i]}</button
 		>
 	{/each}
 
