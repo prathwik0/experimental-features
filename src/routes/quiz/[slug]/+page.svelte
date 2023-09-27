@@ -82,4 +82,14 @@
 		<button class="btn btn-primary w-32" on:click={() => restart()}>Restart Quiz</button>
 	{/if}
 	<p>Questions Attempted: {questionCounter}</p>
+	<div class="flex flex-row gap-10">
+		{#each { length: data.list.length } as _, i}
+			<button
+				class="btn w-10"
+				on:click={() => {
+					currentQuestion = i;
+				}}>{i + 1}</button
+			>
+		{/each}
+	</div>
 </div>
