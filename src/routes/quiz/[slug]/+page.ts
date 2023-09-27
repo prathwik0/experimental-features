@@ -1,9 +1,10 @@
 import type { PageLoad } from './$types';
+import { error } from '@sveltejs/kit';
 
 import { db } from '$lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
-export const load = (async ({ params }) => {
+export const load : PageLoad = (async ({ params }) => {
 	const docRef = doc(db, 'Quiz', params.slug, 'questionnaire', params.slug);
 	const docSnap = await getDoc(docRef);
 
@@ -11,7 +12,6 @@ export const load = (async ({ params }) => {
 		const data = docSnap.data();
 		return { data };
 	} else {
-		console.error("Couldn't fetch the quiz.");
-		return {};
+		throw error(404, 'No such quiz!');
 	}
-}) satisfies PageLoad;
+})
