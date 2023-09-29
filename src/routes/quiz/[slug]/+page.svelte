@@ -17,17 +17,14 @@
 		});
 	}
 
-	function prevClick() {
-		if (currentQuestion === 0) {
-			return;
-		}
-		currentQuestion--;
-	}
+	// function prevClick() {
+	// 	if (currentQuestion === 0) {
+	// 		return;
+	// 	}
+	// 	currentQuestion--;
+	// }
 
 	function nextClick() {
-		if (currentQuestion === data.list.length - 1) {
-			return;
-		}
 		currentQuestion++;
 	}
 
@@ -49,11 +46,14 @@
 <p>Current question - {currentQuestion}</p>
 <hr />
 
-<div class="flex flex-col items-center gap-4">
-	<h1>{currentQuestion + 1}. {data.list[currentQuestion].question}</h1>
+<div class="mx-auto flex w-96 flex-col items-center gap-4">
+	<h1 class="self-start text-left text-xl font-medium">
+		{currentQuestion + 1}. {data.list[currentQuestion].question}
+	</h1>
 
 	{#each data.answers[currentQuestion].order as i}
 		<button
+			type="button"
 			class="btn {data.list[currentQuestion].answer ===
 				data.list[currentQuestion].options[i] && data.answers[currentQuestion].answered
 				? 'btn-success'
@@ -61,31 +61,33 @@
 				{data.answers[currentQuestion].answer === data.list[currentQuestion].options[i] &&
 			data.list[currentQuestion].answer !== data.list[currentQuestion].options[i] &&
 			data.answers[currentQuestion].answered
-				? 'btn-warning'
+				? 'btn-error'
 				: ''}
-				"
+				w-full"
 			value={data.list[currentQuestion].options[i]}
 			on:click={(e) => handleClick(e)}>{data.list[currentQuestion].options[i]}</button
 		>
 	{/each}
 
-	{#if currentQuestion === data.list.length - 1}
+	{#if currentQuestion === data.list.length - 1 && questionCounter === data.list.length}
 		<h1>Score: {score}</h1>
 	{/if}
 
-	{#if currentQuestion !== 0}
+	<!-- {#if currentQuestion !== 0}
 		<button class="btn btn-primary w-32" on:click={() => prevClick()}>Previous</button>
-	{/if}
+	{/if} -->
 	{#if currentQuestion !== data.list.length - 1}
 		<button class="btn btn-primary w-32" on:click={() => nextClick()}>Next</button>
-	{:else}
+	{:else if questionCounter === data.list.length}
 		<button class="btn btn-primary w-32" on:click={() => restart()}>Restart Quiz</button>
 	{/if}
 	<p>Questions Attempted: {questionCounter}/{data.list.length}</p>
 	<div class="flex flex-row gap-10">
 		{#each { length: data.list.length } as _, i}
 			<button
-				class="btn w-10"
+				class="btn w-0 {data.answers[i].answered && currentQuestion !== i
+					? 'btn-warning'
+					: 'btn-outline'} {currentQuestion === i ? 'btn-active' : ''}"
 				on:click={() => {
 					currentQuestion = i;
 				}}>{i + 1}</button
